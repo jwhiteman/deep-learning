@@ -20,14 +20,17 @@
       (+ (* (list-ref theta 0) data-xs)
          (list-ref theta 1)))))
 
+
+;; TODO: try Mean Squared Error
 (define loss
   (lambda (target)
     (lambda (data-xs data-ys)
       (lambda (theta)
         (let ((guess ((target data-xs) theta)))
-          (sum
-            (sqr
-              (- data-ys guess))))))))
+          (sqrt
+            (sum
+              (sqr
+                (- data-ys guess)))))))))
 
 (define obj ((loss line) bmi blood-pressure))
 
@@ -50,8 +53,9 @@
         '(1 2 3))
 ;; '(-14 -13 -12)
 
-(define learning-rate 0.01)
-(define revs 1000)
+(define learning-rate 0.001)
+(define revs 1000000)
+(define starting-theta (list 0.0 0.0))
 
 (define gradient-descent
   (lambda (obj)
@@ -62,9 +66,16 @@
              theta
              (gradient-of obj theta)))
       revs
-      (list 0.0 0.0))))
+      starting-theta)))
 
-(gradient-descent obj)
+(let ((res (gradient-descent obj)))
+  (print res)
+  (newline)
+  (print (obj res)))
+
+;; BEST: 0.001 & 1_000_000 revs
+;;'(1.5504921323393905 80.00366215346878)
+;; -> loss of 5 something
 
 ;; revs.times.reduce([0.0, 0.0]) do |theta, _n|
 ;;   theta - alpha * gradient-of(obj, theta)
