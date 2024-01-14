@@ -8,11 +8,8 @@
 (define bmi (tensor 30.30 33.88 31.46 30.21 27.61 32.39 27.91 37.67 39.22 26.74))
 (define blood-pressure (tensor 125.45 130.81 127.19 125.32 121.41 128.58 121.86 136.51 138.83 120.12))
 
-;(require malt)
-;(define data-xs (tensor 2.0 1.0 4.0 3.0))
-;(define data-ys (tensor 1.8 1.2 4.2 3.3))
-;(define bmi data-xs)
-;(define blood-pressure data-ys)
+;(define bmi (tensor 2.0 1.0 4.0 3.0))
+;(define blood-pressure (tensor 1.8 1.2 4.2 3.3))
 
 (define line
   (lambda (data-xs)
@@ -21,16 +18,17 @@
          (list-ref theta 1)))))
 
 
-;; TODO: try Mean Squared Error
+;; trying MSE here:
 (define loss
   (lambda (target)
     (lambda (data-xs data-ys)
       (lambda (theta)
-        (let ((guess ((target data-xs) theta)))
-          (sqrt
-            (sum
-              (sqr
-                (- data-ys guess)))))))))
+        (let* ((guess ((target data-xs) theta))
+               (sum-of-squares
+                 (sum
+                   (sqr
+                     (- data-ys guess)))))
+          (/ sum-of-squares (tlen data-xs)))))))
 
 (define obj ((loss line) bmi blood-pressure))
 
@@ -53,7 +51,7 @@
         '(1 2 3))
 ;; '(-14 -13 -12)
 
-(define learning-rate 0.001)
+(define learning-rate 0.0001)
 (define revs 1000000)
 (define starting-theta (list 0.0 0.0))
 
@@ -69,20 +67,8 @@
       starting-theta)))
 
 (let ((res (gradient-descent obj)))
+  (print (obj (list 0.0 0.0)))
+  (newline)
   (print res)
   (newline)
   (print (obj res)))
-
-;; BEST: 0.001 & 1_000_000 revs
-;;'(1.5504921323393905 80.00366215346878)
-;; -> loss of 5 something
-
-;; revs.times.reduce([0.0, 0.0]) do |theta, _n|
-;;   theta - alpha * gradient-of(obj, theta)
-;; end
-;;
-;; revs.times.reduce([0.0, 0.0]) do |theta, _n|
-;;   gradient-of(obj, theta).each_with_index.map |e, idx|
-;;     theta[idx] - alpha * e
-;;   end
-;; end
