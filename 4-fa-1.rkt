@@ -3,7 +3,6 @@
 (require malt)
 
 ;; TODO: try to get this to work
-;; TODO: plot everything you can
 
 (define bmi (tensor 30.30 33.88 31.46 30.21 27.61 32.39 27.91 37.67 39.22 26.74))
 (define blood-pressure (tensor 125.45 130.81 127.19 125.32 121.41 128.58 121.86 136.51 138.83 120.12))
@@ -11,26 +10,55 @@
 ;(define bmi (tensor 2.0 1.0 4.0 3.0))
 ;(define blood-pressure (tensor 1.8 1.2 4.2 3.3))
 
-(define line
+;; renaming this to my-line to not conflict w/ plot:
+(define my-line
   (lambda (data-xs)
     (lambda (theta)
       (+ (* (list-ref theta 0) data-xs)
          (list-ref theta 1)))))
 
+;; best 0.21 - { revs: 1_000_000, rate: 0.0001 }
+(define loss-f-mse
+  (lambda (ys guess)
+    (/ (sum
+         (sqr
+           (- ys guess)))
+       (tlen ys))))
+
+;; result: 4.8
+(define loss-f-abs
+  (lambda (ys guess)
+    (sum
+      (abs
+        (- ys guess)))))
+
+;; result: 8.66
+(define loss-f-abs-root
+  (lambda (ys guess)
+    (sqrt (loss-f-abs ys guess))))
+
+;; result: 15.9
+(define loss-f-euclid
+  (lambda (ys guess)
+    (sqrt (loss-f-book ys guess))))
+
+;; result: nan
+(define loss-f-book
+  (lambda (ys guess)
+    (sum
+      (sqr
+        (- ys guess)))))
 
 ;; trying MSE here:
 (define loss
   (lambda (target)
     (lambda (data-xs data-ys)
-      (lambda (theta)
-        (let* ((guess ((target data-xs) theta))
-               (sum-of-squares
-                 (sum
-                   (sqr
-                     (- data-ys guess)))))
-          (/ sum-of-squares (tlen data-xs)))))))
+      (lambda (loss-f)
+        (lambda (theta)
+          (let ((guess ((target data-xs) theta)))
+            (loss-f data-ys guess)))))))
 
-(define obj ((loss line) bmi blood-pressure))
+(define obj (((loss my-line) bmi blood-pressure) loss-f-mse))
 
 (obj (list 0.0 0.0))
 ;; 163191.9846
