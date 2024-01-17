@@ -2,13 +2,8 @@
 
 (require malt)
 
-;; TODO: try to get this to work
-
 (define bmi (tensor 30.30 33.88 31.46 30.21 27.61 32.39 27.91 37.67 39.22 26.74))
 (define blood-pressure (tensor 125.45 130.81 127.19 125.32 121.41 128.58 121.86 136.51 138.83 120.12))
-
-;(define bmi (tensor 2.0 1.0 4.0 3.0))
-;(define blood-pressure (tensor 1.8 1.2 4.2 3.3))
 
 ;; renaming this to my-line to not conflict w/ plot:
 (define my-line
