@@ -62,7 +62,7 @@
       (lambda (theta)
         ((g
            ((f t) theta))
-         (refer theta j))))))
+         (refr theta j))))))
 
 (block-compose relu relu 2)
 
