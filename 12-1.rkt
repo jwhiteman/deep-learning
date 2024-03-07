@@ -27,7 +27,7 @@
 (define layer3 (dense-block relu 26 45))
 
 ;; block-compose?
-;; why t => theta? because while layer functions are target functions, there
+;; why t => theta? because while layer functions are target functions, their
 ;; composition must also be a target function.
 (define block-compose
   (lambda (f g j)
