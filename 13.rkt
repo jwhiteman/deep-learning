@@ -1,3 +1,4 @@
+#lang racket
 (require malt)
 (require malt/examples/iris)
 
@@ -21,12 +22,11 @@
       (dense-block 6 3)))) ;; 3 neurons - 6 wide
 
 ;; ?
-(define init-shape
-  (lambda (s)
-    (cond
-      ((= (len s) 1) (zero-tensor s))
-      ((= (len s) 2)
-       (random-tensor 0.0 (/ 2 (tref s 1) s))))))
+(define (init-shape s)
+  (cond
+    ((= (len s) 1) (zero-tensor s))
+    ((= (len s) 2)
+     (random-tensor 0.0 (/ 2 (list-ref s 1)) s))))
 
 (define init-theta
   (lambda (shapes)
