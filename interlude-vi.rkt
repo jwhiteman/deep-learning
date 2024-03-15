@@ -76,7 +76,7 @@
 ;; given a tensor, a countdown index & a max index, countdown to zero and
 ;; return the max index
 (define argmaxed
-  (lambda  (t i a)
+  (lambda (t i a)
     (let ((a (next-a t i a)))
       (if (zero? i)
         a
